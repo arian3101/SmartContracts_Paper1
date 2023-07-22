@@ -43,7 +43,7 @@ contract Regfun_m {
         bytes32 s2 = xorBytes(bytes(s0), passwordBytes);
         string memory s3 = concatenateStrings(responseValue, uint2str(randomNumber), "");
         bytes32 s4 = s1 ^ (keccak256(abi.encodePacked(identity)));
-        emit ComputationResultAdded(identity, s4, s2, responseValue);
+        emit ComputationResultAdded(identity, s4, s2, responseValue,challenge);
     }
     function uint2str(uint256 _i) internal pure returns (string memory) {
         if (_i == 0) {
