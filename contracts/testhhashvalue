@@ -1,0 +1,33 @@
+pragma solidity ^0.8.0;
+
+contract DeviceVerification {
+    event R1R2Calculated(bytes32 R1, bytes32 R2);
+    function calculateHash(string memory value) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(value));
+    }
+
+    // Function to calculate R1 as XOR of random number and hash of the concatenation of identity and response
+    function calculateR1(string memory identity, string memory response, uint256 randomNumber) public pure returns (bytes32) {
+        bytes32 hashValue = calculateHash(string(abi.encodePacked(identity, response)));
+        bytes32 R1 = bytes32(randomNumber) ^ hashValue;
+        return R1;
+    }
+
+    // Function to calculate R2 as hash of the concatenation of identity, response, random number, and timestamp
+    function calculateR2(string memory identity, string memory response, uint256 randomNumber, uint256 timestamp) public pure returns (bytes32) {
+        bytes32 R2 = calculateHash(string(abi.encodePacked(identity, response, randomNumber, timestamp)));
+        return R2;
+    }
+
+    // Function to handle the verification process and emit the R1 and R2 values
+    function verifyAndCalculateR1R2(
+        string memory identity,
+        string memory response,
+        uint256 randomNumber,
+        uint256 timestamp
+    ) public {
+        bytes32 R1 = calculateR1(identity, response, randomNumber);
+        bytes32 R2 = calculateR2(identity, response, randomNumber, timestamp);
+        emit R1R2Calculated(R1, R2);
+    }
+}
